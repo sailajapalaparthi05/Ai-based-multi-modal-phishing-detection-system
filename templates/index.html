@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Phishing Detection</title>
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+        </div>
+
+        <div>
+
+            <h1>AI PHISHING DETECTION</h1>
+
+            <p>
+                Machine Learning Powered Website Security Scanner
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <form action="/predict" method="POST" class="search-box">
+
+        <input
+            type="text"
+            name="url"
+            placeholder="https://example.com"
+            required>
+
+        <button>
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            Scan Website
+
+        </button>
+
+    </form>
+
+
+{% if prediction %}
+
+<!-- RESULT -->
+
+<div class="result-card">
+
+    <h2>SCAN RESULT</h2>
+
+<div class="progress {{ status }}"
+style="--value:{{ confidence }}">
+
+<div class="inner-circle">
+
+<h1 id="percent"
+data-value="{{ confidence }}">
+
+0%
+
+</h1>
+
+{% if status=="safe" %}
+
+<span class="status safe">
+
+<i class="fa-solid fa-circle-check"></i>
+
+SAFE
+
+</span>
+
+{% else %}
+
+<span class="status phishing">
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+PHISHING
+
+</span>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<p class="website">{{ url }}</p>
+
+</div>
+
+
+<!-- SECURITY -->
+
+<h2 class="title">
+
+Security Analysis
+
+</h2>
+
+<div class="cards">
+
+<div class="card">
+
+<i class="fa-solid fa-lock"></i>
+
+<h3>SSL</h3>
+
+<p>
+
+{{ "Valid" if ssl_valid else "Invalid" }}
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-network-wired"></i>
+
+<h3>DNS</h3>
+
+<p>
+
+{{ "Found" if dns_valid else "Not Found" }}
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-earth-asia"></i>
+
+<h3>Reputation</h3>
+
+<p>
+
+{{ reputation }}
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-calendar-days"></i>
+
+<h3>Domain Age</h3>
+
+<p>
+
+{{ domain_age }}
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-user-shield"></i>
+
+<h3>Brand</h3>
+
+<p>
+
+{{ "Safe" if not brand_spoof else "Detected" }}
+
+</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-gauge-high"></i>
+
+<h3>Risk Score</h3>
+
+<p>
+
+{{ risk_score }}/100
+
+</p>
+
+</div>
+
+</div>
+
+
+
+<!-- THREATS -->
+
+{% if risks %}
+
+<div class="risk-box">
+
+<h2>
+
+Threat Indicators
+
+</h2>
+
+<ul>
+
+{% for r in risks %}
+
+<li>
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+{{ r }}
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+{% endif %}
+
+{% endif %}
+
+<footer>
+
+<p>
+
+AI Based Multi Platform Phishing Detection System
+
+</p>
+
+</footer>
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>

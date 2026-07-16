@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.vscode/
+
+catboost_info/
+app.db
+
+dataset.csv
