@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vishing Scanner - AI Phishing Detection</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='vishing.css') }}">
+</head>
+
+<body>
+
+<div class="glow-blob glow-1"></div>
+<div class="glow-blob glow-2"></div>
+<div class="glow-blob glow-3"></div>
+<div class="background"></div>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-phone-volume"></i>
+
+        </div>
+
+        <div>
+
+            <h1>AI PHISHING DETECTION</h1>
+
+            <p>
+                Voice Call Phishing (Vishing) Detection
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- NAVBAR TAB SELECTION -->
+    <div class="navbar">
+        <a href="/" class="nav-item"><i class="fa-solid fa-earth-americas"></i> Websites</a>
+        <a href="/email" class="nav-item"><i class="fa-solid fa-envelope"></i> Email</a>
+        <a href="/sms" class="nav-item"><i class="fa-solid fa-comment-sms"></i> SMS</a>
+        <a href="/vishing" class="nav-item active"><i class="fa-solid fa-phone-volume"></i> Vishing</a>
+        <a href="/browser" class="nav-item"><i class="fa-solid fa-window-maximize"></i> Browser</a>
+        <a href="/qr" class="nav-item"><i class="fa-solid fa-qrcode"></i> QR Code</a>
+        <a href="/dashboard" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> History Logs</a>
+    </div>
+
+
+    <!-- VISHING FORM -->
+
+    <form action="/predict_vishing" method="POST" enctype="multipart/form-data" class="scan-form vishing-form">
+        <h2><i class="fa-solid fa-microphone"></i> Analyze Call Recording</h2>
+        <p style="color:#cbd5e1;margin-bottom:20px;font-size:14px;">
+            Upload an audio file from a suspicious call. Our system will transcribe the conversation and detect phishing patterns.
+        </p>
+
+        <div class="form-group">
+            <label for="audio_file">Audio File</label>
+            <input type="file" id="audio_file" name="audio_file"
+                   accept="audio/wav,audio/mp3,audio/m4a,audio/mpeg,audio/mp4,audio/aac,audio/ogg,.wav,.mp3,.m4a" required>
+            <p style="font-size:12px;color:#94a3b8;margin-top:5px;">Supported formats: WAV, MP3, M4A, MPEG, MP4, AAC, OGG</p>
+        </div>
+
+        <div class="form-group" id="audioPreviewContainer" style="display:none;">
+            <label>Preview</label>
+            <audio id="audioPreview" controls style="width:100%;"></audio>
+        </div>
+
+        <button class="btn-submit" type="submit">
+            <i class="fa-solid fa-microchip"></i> Analyze Call
+        </button>
+    </form>
+
+{% if prediction %}
+    <div class="result-card">
+        <h2>ANALYSIS VERDICT</h2>
+        <div class="progress {{ status }}" style="--value:{{ confidence }}">
+            <div class="inner-circle">
+                <h1 id="percent" data-value="{{ confidence }}">0%</h1>
+                {% if status == "safe" %}
+                <span class="status safe"><i class="fa-solid fa-circle-check"></i> SAFE</span>
+                {% else %}
+                <span class="status vishing"><i class="fa-solid fa-triangle-exclamation"></i> VISHING</span>
+                {% endif %}
+            </div>
+        </div>
+        <p class="website" style="margin-top:20px;">Risk Score: <strong>{{ risk_score }}/100</strong></p>
+    </div>
+
+    {% if transcription %}
+    <div class="transcription-box">
+        <h2><i class="fa-solid fa-file-lines"></i> Transcribed Conversation</h2>
+        <p class="transcription-text">{{ transcription }}</p>
+    </div>
+    {% endif %}
+
+    <h2 class="title">Detection Feature Trace</h2>
+    <div class="cards">
+        <div class="card">
+            <i class="fa-solid fa-microphone-lines"></i>
+            <h3>Speech Recognition</h3>
+            <p>Audio converted to text</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-brain"></i>
+            <h3>ML Classification</h3>
+            <p>TF-IDF + Logistic Regression</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-search"></i>
+            <h3>Pattern Detection</h3>
+            <p>OTP, PIN, CVV, Password</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-gauge-high"></i>
+            <h3>Risk Score</h3>
+            <p>{{ risk_score }}/100</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-clock"></i>
+            <h3>Scan Time</h3>
+            <p style="font-size:13px;">{{ scan_timestamp if scan_timestamp else 'N/A' }}</p>
+        </div>
+    </div>
+
+    {% if reasons %}
+    <div class="risk-box">
+        <h2>Suspicious Patterns Detected</h2>
+        <ul>
+            {% for r in reasons %}
+            <li><i class="fa-solid fa-triangle-exclamation"></i> {{ r }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+{% endif %}
+
+{% if error %}
+    <div class="error-box">
+        <h2><i class="fa-solid fa-circle-exclamation"></i> Error</h2>
+        <p>{{ error }}</p>
+    </div>
+{% endif %}
+
+    <footer><p>AI Based Multi Platform Phishing Detection System</p></footer>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='vishing.js') }}"></script>
+</body>
+</html>

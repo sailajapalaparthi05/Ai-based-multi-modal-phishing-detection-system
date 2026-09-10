@@ -1,30 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Detection History - AI Phishing Detection</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
 
-    <h1>Detection Logs</h1>
+<div class="glow-blob glow-1"></div>
+<div class="glow-blob glow-2"></div>
+<div class="glow-blob glow-3"></div>
+<div class="background"></div>
 
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>URL</th>
-            <th>Result</th>
-            <th>Time</th>
-        </tr>
+<div class="container">
 
-        {% for row in logs %}
-        <tr>
-            <td>{{ row[0] }}</td>
-            <td>{{ row[1] }}</td>
-            <td>{{ row[2] }}</td>
-            <td>{{ row[3] }}</td>
-        </tr>
-        {% endfor %}
+    <!-- HEADER -->
 
-    </table>
+    <div class="header">
 
+        <div class="logo">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+        </div>
+
+        <div>
+
+            <h1>AI PHISHING DETECTION</h1>
+
+            <p>
+                Detection History & Logs
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- NAVBAR TAB SELECTION -->
+    <div class="navbar">
+        <a href="/" class="nav-item"><i class="fa-solid fa-earth-americas"></i> Websites</a>
+        <a href="/email" class="nav-item"><i class="fa-solid fa-envelope"></i> Email</a>
+        <a href="/sms" class="nav-item"><i class="fa-solid fa-comment-sms"></i> SMS</a>
+        <a href="/vishing" class="nav-item"><i class="fa-solid fa-phone-volume"></i> Vishing</a>
+        <a href="/browser" class="nav-item"><i class="fa-solid fa-window-maximize"></i> Browser</a>
+        <a href="/qr" class="nav-item"><i class="fa-solid fa-qrcode"></i> QR Code</a>
+        <a href="/dashboard" class="nav-item active"><i class="fa-solid fa-clock-rotate-left"></i> History Logs</a>
+    </div>
+
+
+    <!-- DASHBOARD CONTENT -->
+    <div class="dashboard-container">
+        <h2><i class="fa-solid fa-clock-rotate-left"></i> Detection History</h2>
+
+        {% if logs %}
+        <div class="logs-list">
+            {% for log in logs %}
+            <div class="log-item">
+                <div class="log-time">{{ log[3] if log|length > 3 else log[2] }}</div>
+                <div class="log-type">{{ log[1] }}</div>
+                <div class="log-result {{ 'safe' if 'safe' in (log[2]|string|lower) else 'phishing' }}">
+                    {{ log[2] }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <p>No detection history found</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <footer><p>AI Based Multi Platform Phishing Detection System</p></footer>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

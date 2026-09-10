@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QR Scanner - AI Phishing Detection</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='qr.css') }}">
+</head>
+
+<body>
+
+<div class="glow-blob glow-1"></div>
+<div class="glow-blob glow-2"></div>
+<div class="glow-blob glow-3"></div>
+<div class="background"></div>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-qrcode"></i>
+
+        </div>
+
+        <div>
+
+            <h1>AI PHISHING DETECTION</h1>
+
+            <p>
+                QR Code Phishing Detection
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- NAVBAR TAB SELECTION -->
+    <div class="navbar">
+        <a href="/" class="nav-item"><i class="fa-solid fa-earth-americas"></i> Websites</a>
+        <a href="/email" class="nav-item"><i class="fa-solid fa-envelope"></i> Email</a>
+        <a href="/sms" class="nav-item"><i class="fa-solid fa-comment-sms"></i> SMS</a>
+        <a href="/vishing" class="nav-item"><i class="fa-solid fa-phone-volume"></i> Vishing</a>
+        <a href="/browser" class="nav-item"><i class="fa-solid fa-window-maximize"></i> Browser</a>
+        <a href="/qr" class="nav-item active"><i class="fa-solid fa-qrcode"></i> QR Code</a>
+        <a href="/dashboard" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> History Logs</a>
+    </div>
+
+
+    <!-- QR TABS -->
+    <div class="qr-tabs">
+        <button class="qr-tab active" onclick="switchTab('upload')">
+            <i class="fa-solid fa-upload"></i> Upload Image
+        </button>
+        <button class="qr-tab" onclick="switchTab('camera')">
+            <i class="fa-solid fa-camera"></i> Camera Scan
+        </button>
+    </div>
+
+
+    <!-- QR UPLOAD FORM -->
+    <div id="upload-tab" class="qr-tab-content active">
+        <form action="/scan-qr-file" method="POST" class="scan-form qr-form" enctype="multipart/form-data">
+            <h2><i class="fa-solid fa-upload"></i> Upload QR Code Image</h2>
+            <p style="color:#cbd5e1;margin-bottom:20px;font-size:14px;">
+                Upload a QR code image to extract the URL and analyze it for phishing
+            </p>
+
+            <div class="form-group">
+                <label for="qr_image">QR Code Image</label>
+                <input type="file" id="qr_image" name="qr_image" accept="image/*" required>
+            </div>
+
+            <button class="btn-submit" type="submit">
+                <i class="fa-solid fa-microchip"></i> Scan QR Code
+            </button>
+        </form>
+    </div>
+
+
+    <!-- QR CAMERA FORM -->
+    <div id="camera-tab" class="qr-tab-content">
+        <div class="scan-form qr-form">
+            <h2><i class="fa-solid fa-camera"></i> Camera QR Scan</h2>
+            <p style="color:#cbd5e1;margin-bottom:20px;font-size:14px;">
+                Use your webcam to scan QR codes directly from physical objects
+            </p>
+
+            <div class="camera-wrapper">
+                <video id="qrVideo" autoplay playsinline muted style="display:none;"></video>
+                <canvas id="qrCanvas" style="display:none;"></canvas>
+                <div id="qrCameraPlaceholder" class="camera-placeholder">
+                    <i class="fa-solid fa-video-slash"></i>
+                    <p>Camera is off</p>
+                </div>
+            </div>
+
+            <div class="camera-actions">
+                <button type="button" class="btn-submit" id="startCameraBtn">
+                    <i class="fa-solid fa-camera"></i> Start Camera
+                </button>
+                <button type="button" class="btn-submit btn-danger" id="stopCameraBtn" style="display:none;">
+                    <i class="fa-solid fa-stop"></i> Stop Camera
+                </button>
+                <button type="button" class="btn-submit" id="captureQrBtn" disabled style="display:none;">
+                    <i class="fa-solid fa-qrcode"></i> Capture QR
+                </button>
+            </div>
+
+            <p id="cameraStatus" class="camera-status"></p>
+        </div>
+    </div>
+
+
+{% if prediction %}
+    <div class="result-card">
+        <h2>ANALYSIS VERDICT</h2>
+        <div class="progress {{ status }}" style="--value:{{ confidence }}">
+            <div class="inner-circle">
+                <h1 id="percent" data-value="{{ confidence }}">0%</h1>
+                {% if status == "safe" %}
+                <span class="status safe"><i class="fa-solid fa-circle-check"></i> SAFE</span>
+                {% else %}
+                <span class="status phishing"><i class="fa-solid fa-triangle-exclamation"></i> PHISHING</span>
+                {% endif %}
+            </div>
+        </div>
+        <p class="website" style="margin-top:20px;">Risk Score: <strong>{{ risk_score }}/100</strong></p>
+    </div>
+
+    <div class="qr-details">
+        <h2>QR Code Analysis</h2>
+        <div class="qr-info">
+            <div class="info-item">
+                <i class="fa-solid fa-link"></i>
+                <span><strong>Extracted URL:</strong> {{ extracted_url }}</span>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="title">Detection Feature Trace</h2>
+    <div class="cards">
+        <div class="card">
+            <i class="fa-solid fa-qrcode"></i>
+            <h3>QR Detection</h3>
+            <p>OpenCV Scanner</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-link"></i>
+            <h3>URL Extraction</h3>
+            <p>Pattern Analysis</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-globe"></i>
+            <h3>Domain Age</h3>
+            <p>{{ domain_age }}</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-star"></i>
+            <h3>Reputation</h3>
+            <p>{{ reputation }}</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-key"></i>
+            <h3>DNS</h3>
+            <p>{{ "Valid" if dns_valid else "Invalid" }}</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-lock"></i>
+            <h3>SSL</h3>
+            <p>{{ "Valid" if ssl_valid else "Invalid" }}</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-mask"></i>
+            <h3>Brand Impersonation</h3>
+            <p>{{ "Detected" if brand_spoof else "Not Detected" }}</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-gauge-high"></i>
+            <h3>Risk Score</h3>
+            <p>{{ risk_score }}/100</p>
+        </div>
+    </div>
+
+{% if risks %}
+    <div class="risk-box">
+        <h2>Suspicious Patterns Detected</h2>
+        <ul>
+            {% for r in risks %}
+            <li><i class="fa-solid fa-triangle-exclamation"></i> {{ r }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+{% endif %}
+
+{% if error %}
+    <div class="error-box">
+        <h2><i class="fa-solid fa-circle-exclamation"></i> Error</h2>
+        <p>{{ error }}</p>
+    </div>
+{% endif %}
+
+    <footer><p>AI Based Multi Platform Phishing Detection System</p></footer>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='qr.js') }}"></script>
+</body>
+</html>

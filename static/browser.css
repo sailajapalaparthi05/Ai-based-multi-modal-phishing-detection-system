@@ -1,0 +1,151 @@
+/* ==========================================================================
+   BROWSER SCANNER MODULE STYLES — Real-Time Telemetry & Extension HUD
+   ========================================================================== */
+
+.extension-banner {
+    background: linear-gradient(135deg, rgba(0, 242, 254, 0.12) 0%, rgba(99, 102, 241, 0.12) 100%);
+    border: 1px solid rgba(0, 242, 254, 0.3);
+    border-radius: var(--radius-lg);
+    padding: 22px 26px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.extension-banner i {
+    font-size: 32px;
+    color: var(--accent-cyan);
+    filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.4));
+}
+
+.extension-banner h3 {
+    font-size: 16px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.extension-banner p {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.extension-banner code {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--accent-cyan);
+    font-family: monospace;
+}
+
+/* Page Screenshot Preview Frame */
+.screenshot-preview {
+    width: 100%;
+    max-width: 550px;
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--border-color);
+    margin: 20px auto;
+    display: block;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+    transition: transform var(--transition-normal);
+}
+
+.screenshot-preview:hover {
+    transform: scale(1.02);
+    border-color: var(--accent-cyan);
+}
+
+/* Deep Learning Verdict Badge */
+.dl-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: var(--radius-full);
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-top: 14px;
+    text-transform: uppercase;
+}
+
+.dl-badge.threat {
+    background: rgba(244, 63, 94, 0.15);
+    color: #fb7185;
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    box-shadow: 0 0 18px rgba(244, 63, 94, 0.25);
+}
+
+.dl-badge.safe {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.25);
+}
+
+/* Auto Scan Radar Status */
+.auto-scan-status {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+    background: rgba(10, 16, 32, 0.4);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-xl);
+    margin: 24px 0;
+}
+
+.auto-scan-status i {
+    font-size: 44px;
+    color: var(--accent-cyan);
+    margin-bottom: 16px;
+    display: block;
+    animation: radarSweep 2.5s ease-in-out infinite;
+}
+
+@keyframes radarSweep {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 15px var(--accent-cyan)); }
+}
+
+.auto-scan-status p {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Telemetry Metadata HUD Grid */
+.metadata-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.meta-item {
+    background: linear-gradient(145deg, rgba(20, 30, 55, 0.5) 0%, rgba(10, 16, 32, 0.7) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    transition: all var(--transition-normal);
+}
+
+.meta-item:hover {
+    border-color: var(--border-color-hover);
+    transform: translateY(-2px);
+}
+
+.meta-item strong {
+    display: block;
+    color: var(--accent-cyan);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+}

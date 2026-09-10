@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SMS Scanner - AI Phishing Detection</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='sms.css') }}">
+</head>
+
+<body>
+
+<div class="glow-blob glow-1"></div>
+<div class="glow-blob glow-2"></div>
+<div class="glow-blob glow-3"></div>
+<div class="background"></div>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-comment-sms"></i>
+
+        </div>
+
+        <div>
+
+            <h1>AI PHISHING DETECTION</h1>
+
+            <p>
+                SMS/Smishing Phishing Detection with ML + URL Analysis
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- NAVBAR TAB SELECTION -->
+    <div class="navbar">
+        <a href="/" class="nav-item"><i class="fa-solid fa-earth-americas"></i> Websites</a>
+        <a href="/email" class="nav-item"><i class="fa-solid fa-envelope"></i> Email</a>
+        <a href="/sms" class="nav-item active"><i class="fa-solid fa-comment-sms"></i> SMS</a>
+        <a href="/vishing" class="nav-item"><i class="fa-solid fa-phone-volume"></i> Vishing</a>
+        <a href="/browser" class="nav-item"><i class="fa-solid fa-window-maximize"></i> Browser</a>
+        <a href="/qr" class="nav-item"><i class="fa-solid fa-qrcode"></i> QR Code</a>
+        <a href="/dashboard" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> History Logs</a>
+    </div>
+
+
+    <!-- SMS FORM -->
+
+    <form action="/predict_sms" method="POST" class="scan-form sms-form">
+        <h2><i class="fa-solid fa-comment-sms"></i> Scan SMS for Smishing</h2>
+        <p style="color:#cbd5e1;margin-bottom:20px;font-size:14px;">
+            LightGBM + OTP pattern detection + URL analysis + sender verification
+        </p>
+
+        <div class="form-group">
+            <label for="sms_text">SMS Message</label>
+            <textarea id="sms_text" name="sms_text" 
+                      placeholder="Use OTP EFF610 to verify your mobile number. Valid for 10 mins. Please do not share it with anyone - By HirePro" 
+                      rows="4" required>{{ sms_text if sms_text else '' }}</textarea>
+        </div>
+
+        <button class="btn-submit" type="submit">
+            <i class="fa-solid fa-microchip"></i> Analyze SMS
+        </button>
+    </form>
+
+{% if prediction %}
+    <div class="result-card">
+        <h2>ANALYSIS VERDICT</h2>
+        <div class="progress {{ status }}" style="--value:{{ confidence }}">
+            <div class="inner-circle">
+                <h1 id="percent" data-value="{{ confidence }}">0%</h1>
+                {% if status == "safe" %}
+                <span class="status safe"><i class="fa-solid fa-circle-check"></i> SAFE</span>
+                {% else %}
+                <span class="status phishing"><i class="fa-solid fa-triangle-exclamation"></i> PHISHING</span>
+                {% endif %}
+            </div>
+        </div>
+        <p class="website" style="margin-top:20px;">Risk Score: <strong>{{ risk_score }}/100</strong></p>
+    </div>
+
+    <div class="sms-details">
+        <h2>SMS Analysis Details</h2>
+        <div class="sms-info">
+            <div class="info-item">
+                <i class="fa-solid fa-check-circle"></i>
+                <span><strong>OTP Pattern:</strong> {{ otp_pattern|title }}</span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-link"></i>
+                <span><strong>URLs Found:</strong> {{ url_count }}</span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-phone"></i>
+                <span><strong>Phone Numbers:</strong> {{ phone_count }}</span>
+            </div>
+        </div>
+    </div>
+
+    {% if extracted_urls %}
+    <div class="url-analysis">
+        <h2>Extracted URLs Analysis</h2>
+        <p class="url-hint"><i class="fa-solid fa-hand-pointer"></i> Click a URL to view risk factors</p>
+        {% for url_info in extracted_urls %}
+        <div class="url-item clickable"
+             data-url="{{ url_info.url }}"
+             data-status="{{ url_info.status }}"
+             data-confidence="{{ url_info.confidence }}"
+             data-risk-score="{{ url_info.risk_score }}"
+             data-risks='{{ url_info.risks | tojson }}'>
+            <p class="url-text">{{ url_info.url }}</p>
+            <div class="url-status {{ url_info.status }}">
+                {{ url_info.status|title }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if reasons %}
+    <div class="risk-box">
+        <h2>Suspicious Patterns Detected</h2>
+        <ul>
+            {% for r in reasons %}
+            <li><i class="fa-solid fa-triangle-exclamation"></i> {{ r }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+{% endif %}
+
+{% if error %}
+    <div class="error-box">
+        <h2><i class="fa-solid fa-circle-exclamation"></i> Error</h2>
+        <p>{{ error }}</p>
+    </div>
+{% endif %}
+
+    <footer><p>AI Based Multi Platform Phishing Detection System</p></footer>
+</div>
+
+<div id="url-modal" class="url-modal">
+    <div class="url-modal-overlay"></div>
+    <div class="url-modal-content">
+        <button class="url-modal-close" type="button" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <h2><i class="fa-solid fa-link"></i> URL Analysis</h2>
+        <p class="url-modal-url" id="modal-url"></p>
+        <div class="url-modal-meta">
+            <span id="modal-status" class="url-modal-badge"></span>
+            <span id="modal-confidence"></span>
+            <span id="modal-risk-score"></span>
+        </div>
+        <div class="url-modal-risks">
+            <h3>Risk Factors</h3>
+            <ul id="modal-risks-list"></ul>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='url-modal.js') }}"></script>
+</body>
+</html>

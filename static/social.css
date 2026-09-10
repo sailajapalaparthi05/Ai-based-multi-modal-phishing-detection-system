@@ -1,0 +1,143 @@
+/* ==========================================================================
+   SOCIAL SCANNER MODULE STYLES — OSINT Profile & Impersonation HUD
+   ========================================================================== */
+
+/* Authentic Platform Badges */
+.platform-badge {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+    gap: 0; /* no internal gap needed */
+    /* keep existing padding removed to enforce size */
+}
+
+.platform-badge.instagram {
+    background: linear-gradient(135deg, rgba(225, 48, 108, 0.2), rgba(131, 58, 180, 0.2));
+    color: #f472b6;
+    border: 1px solid rgba(225, 48, 108, 0.4);
+    box-shadow: 0 0 15px rgba(225, 48, 108, 0.25);
+}
+
+.platform-badge.facebook {
+    background: rgba(24, 119, 242, 0.2);
+    color: #60a5fa;
+    border: 1px solid rgba(24, 119, 242, 0.4);
+    box-shadow: 0 0 15px rgba(24, 119, 242, 0.25);
+}
+
+.platform-badge.twitter {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
+.platform-badge.linkedin {
+    background: rgba(10, 102, 194, 0.2);
+    color: #7dd3fc;
+    border: 1px solid rgba(10, 102, 194, 0.4);
+    box-shadow: 0 0 15px rgba(10, 102, 194, 0.25);
+}
+
+/* Profile Intelligence Card */
+.profile-card {
+    background: linear-gradient(145deg, rgba(20, 30, 55, 0.55) 0%, rgba(10, 16, 32, 0.75) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 28px 32px;
+    margin-top: 24px;
+    backdrop-filter: blur(18px);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+}
+
+.profile-card h4 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 2px;
+}
+
+.profile-card .handle {
+    color: var(--accent-cyan);
+    font-size: 14.5px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+    padding: 16px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.profile-stat {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+}
+
+.profile-stat strong {
+    color: #ffffff;
+    display: block;
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 2px;
+}
+
+.verified-badge {
+    color: var(--accent-cyan);
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.extracted-urls-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.extracted-urls-list li {
+    padding: 12px 18px;
+    background: rgba(10, 16, 32, 0.65);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #e2e8f0;
+    word-break: break-all;
+}
+
+.extracted-urls-list li.danger {
+    border-color: rgba(244, 63, 94, 0.4);
+    background: rgba(244, 63, 94, 0.1);
+    color: #fca5a5;
+    border-left: 4px solid var(--status-phishing);
+}
+
+.fetch-note {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 12px;
+}

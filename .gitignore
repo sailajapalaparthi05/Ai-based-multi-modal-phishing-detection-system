@@ -1,9 +1,11 @@
-.venv/
+﻿.venv/
+venv/
 __pycache__/
 *.pyc
+.env
+*.env
 .vscode/
-
-catboost_info/
-app.db
-
-dataset.csv
+instance/
+*.log
+temp/
+uploads/

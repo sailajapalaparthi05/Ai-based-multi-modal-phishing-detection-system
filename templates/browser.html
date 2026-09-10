@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Browser Scanner - AI Phishing Detection</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='browser.css') }}">
+</head>
+
+<body>
+
+<div class="glow-blob glow-1"></div>
+<div class="glow-blob glow-2"></div>
+<div class="glow-blob glow-3"></div>
+<div class="background"></div>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-window-maximize"></i>
+
+        </div>
+
+        <div>
+
+            <h1>AI PHISHING DETECTION</h1>
+
+            <p>
+                Browser Behavior & Attack Detection
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- NAVBAR TAB SELECTION -->
+    <div class="navbar">
+        <a href="/" class="nav-item"><i class="fa-solid fa-earth-americas"></i> Websites</a>
+        <a href="/email" class="nav-item"><i class="fa-solid fa-envelope"></i> Email</a>
+        <a href="/sms" class="nav-item"><i class="fa-solid fa-comment-sms"></i> SMS</a>
+        <a href="/vishing" class="nav-item"><i class="fa-solid fa-phone-volume"></i> Vishing</a>
+        <a href="/browser" class="nav-item active"><i class="fa-solid fa-window-maximize"></i> Browser</a>
+        <a href="/qr" class="nav-item"><i class="fa-solid fa-qrcode"></i> QR Code</a>
+        <a href="/dashboard" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> History Logs</a>
+    </div>
+
+
+    <!-- BANNER -->
+    <div class="extension-banner">
+        <i class="fa-brands fa-chrome"></i>
+        <div>
+            <h3>Chrome Extension — Fully Automatic Monitoring</h3>
+            <p>Install the extension from <code>browser_extension/</code> folder. It automatically captures URLs, redirects, popups, screenshots, SSL status, and sends them to this dashboard.</p>
+            <p style="margin-top:8px;font-size:12px;color:#38bdf8;"><strong>Enhanced Features:</strong> Domain pattern analysis, IP detection, subdomain analysis, suspicious JavaScript detection, automatic download tracking.</p>
+        </div>
+    </div>
+
+    <div id="auto-scan-status" class="auto-scan-status">
+        <i class="fa-solid fa-satellite-dish"></i>
+        <p>Waiting for automatic scan data from Chrome Extension...</p>
+        <p style="font-size:12px;margin-top:8px;">Browse any website with the extension active — results appear here automatically.</p>
+    </div>
+
+    <div id="browser-results" {% if not prediction %}style="display:none"{% endif %}>
+{% if prediction %}
+    <div class="result-card">
+        <h2>ANALYSIS VERDICT</h2>
+        <div class="progress {{ status }}" style="--value:{{ confidence }}">
+            <div class="inner-circle">
+                <h1 id="percent" data-value="{{ confidence }}">0%</h1>
+                {% if status == "safe" %}
+                <span class="status safe"><i class="fa-solid fa-circle-check"></i> SAFE</span>
+                {% else %}
+                <span class="status phishing"><i class="fa-solid fa-triangle-exclamation"></i> PHISHING</span>
+                {% endif %}
+            </div>
+        </div>
+        <p class="website" style="margin-top:20px;">Risk Score: <strong>{{ risk_score }}/100</strong></p>
+    </div>
+
+    <div class="browser-details">
+        <h2>Browser Behavior Analysis</h2>
+        <div class="browser-info">
+            <div class="info-item">
+                <i class="fa-solid fa-link"></i>
+                <span><strong>Current URL:</strong> {{ current_url }}</span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-exchange-alt"></i>
+                <span><strong>Redirects:</strong> {{ redirect_len }}</span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-lock"></i>
+                <span><strong>SSL Valid:</strong> {{ "Yes" if ssl_valid else "No" }}</span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-network-wired"></i>
+                <span><strong>DNS Valid:</strong> {{ "Yes" if dns_valid else "No" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="title">Detection Feature Trace</h2>
+    <div class="cards">
+        <div class="card">
+            <i class="fa-solid fa-eye"></i>
+            <h3>Screenshot</h3>
+            <p>MobileNetV2 Analysis</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-robot"></i>
+            <h3>Deep Learning</h3>
+            <p>{{ dl_prediction }}</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-globe"></i>
+            <h3>URL ML</h3>
+            <p>Phishing Model</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-bolt"></i>
+            <h3>Heuristics</h3>
+            <p>Score: {{ heuristic_score }}</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-gauge-high"></i>
+            <h3>Risk Score</h3>
+            <p>{{ risk_score }}/100</p>
+        </div>
+        <div class="card">
+            <i class="fa-solid fa-clock"></i>
+            <h3>Scan Time</h3>
+            <p style="font-size:13px;">{{ scan_timestamp if scan_timestamp else 'N/A' }}</p>
+        </div>
+    </div>
+
+{% if risks %}
+    <div class="risk-box">
+        <h2>Threat Reasons</h2>
+        <ul>
+            {% for r in risks %}
+            <li><i class="fa-solid fa-triangle-exclamation"></i> {{ r }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+{% endif %}
+    </div>
+
+    <footer><p>AI Based Multi Platform Phishing Detection System</p></footer>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='browser.js') }}"></script>
+</body>
+</html>

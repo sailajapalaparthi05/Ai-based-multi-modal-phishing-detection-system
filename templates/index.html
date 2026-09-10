@@ -7,6 +7,10 @@
 
     <title>AI Phishing Detection</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
@@ -16,6 +20,9 @@
 
 <body>
 
+<div class="glow-blob glow-1"></div>
+<div class="glow-blob glow-2"></div>
+<div class="glow-blob glow-3"></div>
 <div class="background"></div>
 
 <div class="container">
@@ -40,6 +47,32 @@
 
         </div>
 
+    </div>
+
+
+    <!-- NAVBAR TAB SELECTION -->
+    <div class="navbar">
+        <a href="/" class="nav-item active">
+            <i class="fa-solid fa-earth-americas"></i> Websites
+        </a>
+        <a href="/email" class="nav-item">
+            <i class="fa-solid fa-envelope"></i> Email
+        </a>
+        <a href="/sms" class="nav-item">
+            <i class="fa-solid fa-comment-sms"></i> SMS
+        </a>
+        <a href="/vishing" class="nav-item">
+            <i class="fa-solid fa-phone-volume"></i> Vishing
+        </a>
+        <a href="/browser" class="nav-item">
+            <i class="fa-solid fa-window-maximize"></i> Browser
+        </a>
+        <a href="/qr" class="nav-item">
+            <i class="fa-solid fa-qrcode"></i> QR Code
+        </a>
+        <a href="/dashboard" class="nav-item">
+            <i class="fa-solid fa-clock-rotate-left"></i> History Logs
+        </a>
     </div>
 
 
@@ -185,11 +218,11 @@ Security Analysis
 
 <i class="fa-solid fa-user-shield"></i>
 
-<h3>Brand</h3>
+<h3>Brand Check</h3>
 
 <p>
 
-{{ "Safe" if not brand_spoof else "Detected" }}
+{{ "Potential impersonation detected" if brand_spoof else "No suspicious brand impersonation detected" }}
 
 </p>
 
@@ -211,56 +244,28 @@ Security Analysis
 
 </div>
 
-
-
-<!-- THREATS -->
-
 {% if risks %}
-
 <div class="risk-box">
-
-<h2>
-
-Threat Indicators
-
-</h2>
-
-<ul>
-
-{% for r in risks %}
-
-<li>
-
-<i class="fa-solid fa-triangle-exclamation"></i>
-
-{{ r }}
-
-</li>
-
-{% endfor %}
-
-</ul>
-
+    <h2>Suspicious Patterns Detected</h2>
+    <ul>
+        {% for r in risks %}
+        <li><i class="fa-solid fa-triangle-exclamation"></i> {{ r }}</li>
+        {% endfor %}
+    </ul>
 </div>
-
+{% endif %}
 {% endif %}
 
+{% if error %}
+    <div class="error-box">
+        <h2><i class="fa-solid fa-circle-exclamation"></i> Error</h2>
+        <p>{{ error }}</p>
+    </div>
 {% endif %}
 
-<footer>
-
-<p>
-
-AI Based Multi Platform Phishing Detection System
-
-</p>
-
-</footer>
-
+    <footer><p>AI Based Multi Platform Phishing Detection System</p></footer>
 </div>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
-
 </body>
-
 </html>
