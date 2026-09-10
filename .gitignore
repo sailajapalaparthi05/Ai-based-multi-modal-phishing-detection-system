@@ -9,3 +9,4 @@ instance/
 *.log
 temp/
 uploads/
+dataset_email.csv
