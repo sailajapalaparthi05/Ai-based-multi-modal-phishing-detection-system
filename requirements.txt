@@ -19,3 +19,4 @@ instaloader
 openai-whisper
 SpeechRecognition
 imageio-ffmpeg
+gunicorn
