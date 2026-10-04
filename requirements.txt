@@ -15,7 +15,6 @@ pillow
 numpy
 opencv-python
 pyzbar
-zxingcpp
 instaloader
 openai-whisper
 SpeechRecognition
